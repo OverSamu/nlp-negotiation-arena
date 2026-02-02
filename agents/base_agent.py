@@ -1,3 +1,4 @@
+import json
 from abc import ABC, abstractmethod
 
 
@@ -32,7 +33,22 @@ Negotiation state:
 Conversation history:
 {history}
 
-Answer with a clear proposal or accept/reject the last proposal.
+Please reply ONLY in JSON format, following one of these patterns:
+
+PROPOSAL:
+{{
+  "action": "propose",
+  "share": <integer between 0 and 100>,
+  "message": "<short explanation>"
+}}
+
+ACCEPTANCE:
+{{
+  "action": "accept",
+  "message": "<short explanation>"
+}}
+
+DO NOT use text outside of the JSON.
 """
         return prompt
 
@@ -41,5 +57,13 @@ Answer with a clear proposal or accept/reject the last proposal.
         prompt = self.build_prompt(negotiation_state)
         response = self.model.generate(prompt)
 
-        self.observe(f"{self.name}: {response}")
-        return response
+        try:
+            parsed = json.loads(response)
+        except json.JSONDecodeError:
+            parsed = {
+                "action": "invalid",
+                "raw": response
+            }
+
+        self.observe(f"{self.name}: {parsed}")
+        return parsed
