@@ -1,7 +1,6 @@
 from agents.fair_agent import FairAgent
 from agents.profit_agent import ProfitAgent
 from environment.negotiation_game import NegotiationGame
-from environment.proposal import Proposal
 from model.dummy_model import DummyModel
 from model.llama_cpp_model import LlamaCppModel
 
@@ -15,30 +14,20 @@ def run():
     agent_a = ProfitAgent("Agent A", model)
     agent_b = FairAgent("Agent B", model)
 
-    game = NegotiationGame([agent_a.name, agent_b.name])
+    game = NegotiationGame([agent_a, agent_b])
 
-    current_agent = agent_a
+    max_rounds = 5
     rounds = 0
 
-    while not game.is_over():
-        state = game.get_state()
-        history = game.get_proposal_history()
-        response = current_agent.act(state, [agent_a.name, agent_b.name], history)
-        current_proposal = Proposal(response["shares"])
+    while rounds < max_rounds:
+        agreement = game.step()
         rounds += 1
-        last_proposal = game.last_proposal()
-
-        if last_proposal and current_proposal == last_proposal:
+        if agreement:
             return {
                 "agreement": True,
                 "rounds": rounds,
-                "final_share": current_proposal
+                "final_share": game.last_proposal()
             }
-
-        game.update_proposal(current_agent.name, current_proposal)
-
-        # Switch turns
-        current_agent = agent_b if current_agent == agent_a else agent_a
 
     return {
         "agreement": False,
@@ -48,4 +37,9 @@ def run():
 
 
 if __name__ == "__main__":
-    run()
+    result = run()
+    print("Negotiation Result:")
+    print(f"Agreement Reached: {result['agreement']}")
+    print(f"Rounds Taken: {result['rounds']}")
+    if result["agreement"]:
+        print(f"Final Share: {result['final_share']}")

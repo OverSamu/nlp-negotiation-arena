@@ -1,10 +1,12 @@
+from environment.proposal import Proposal
+
+
 class NegotiationGame:
-    def __init__(self, agent_names, total_resource=100, max_rounds=5):
+    def __init__(self, agents, total_resource=100):
         self.total = total_resource
-        self.max_rounds = max_rounds
-        self.round = 0
         self.proposals = []
-        self.agent_names = agent_names
+        self.agents = agents
+        self.agent_turn = 0  # Index to track whose turn it is
 
     def last_proposal(self):
         return self.proposals[-1][1] if self.proposals else None
@@ -18,9 +20,17 @@ class NegotiationGame:
         """Returns a history of all proposals made."""
         return self.proposals
 
-    def update_proposal(self, author, proposal):
-        self.proposals.append((author, proposal))
-        self.round += 1
+    def step(self):
+        state = self.get_state()
+        history = self.get_proposal_history()
+        current_agent = self.agents[self.agent_turn]
+        agent_names = [agent.name for agent in self.agents]
+        response = current_agent.act(state, agent_names, history)
+        current_proposal = Proposal(response["shares"], response.get("message", ""))
 
-    def is_over(self):
-        return self.round >= self.max_rounds
+        last_proposal = self.last_proposal()
+        if last_proposal and current_proposal == last_proposal:
+            return True  # Agreement reached
+        self.proposals.append((current_agent, current_proposal))
+        self.agent_turn = (self.agent_turn + 1) % len(self.agents)  # Switch turn
+        return False  # No agreement yet
