@@ -33,22 +33,16 @@ Negotiation state:
 Conversation history:
 {history}
 
-Please reply ONLY in JSON format, following one of these patterns:
+Please reply ONLY in JSON format, following this pattern:
 
-PROPOSAL:
 {{
-  "action": "propose",
-  "share": <integer between 0 and 100>,
-  "message": "<short explanation>"
+  "my_share": int (0-100, representing the percentage of the total resource you want to claim),
+  "your_share": int (0-100, representing the percentage of the total resource you are willing to offer to the other agent),
+  "message": "<short explanation>" 
 }}
-
-ACCEPTANCE:
-{{
-  "action": "accept",
-  "message": "<short explanation>"
-}}
-
 DO NOT use text outside of the JSON.
+If you want to accept the last proposal, set "my_share" to the value proposed by the other agent and "your_share" to 100 - that value.
+Always ensure that "my_share" + "your_share" equals 100, and that both values are between 0 and 100.
 """
         return prompt
 
