@@ -12,7 +12,6 @@ class LlamaCppModel(BaseLLM):
     def generate(self, prompt: str) -> str:
         output = self.llm(
             prompt,
-            max_tokens=256,
-            stop=["}"]
+            max_tokens=256
         )
-        return output["choices"][0]["text"].strip() + "}"
+        return output["choices"][0]["text"].strip()
