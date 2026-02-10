@@ -1,3 +1,17 @@
+class Proposal:
+    def __init__(self, agent1_share, agent2_share):
+        self.agent1_share = agent1_share
+        self.agent2_share = agent2_share
+
+    def __str__(self):
+        return f"Agent 1: {self.agent1_share}, Agent 2: {self.agent2_share}"
+
+    def __eq__(self, other):
+        if not isinstance(other, Proposal):
+            return False
+        return self.agent1_share == other.agent1_share and self.agent2_share == other.agent2_share
+
+
 class NegotiationGame:
     def __init__(self, total_resource=100, max_rounds=5):
         self.total = total_resource
