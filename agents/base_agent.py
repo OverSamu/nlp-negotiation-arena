@@ -16,8 +16,11 @@ class BaseAgent(ABC):
         """Build the prompt for the LLM"""
         history_str = ""
         if history:
-            for i, (author, proposal) in enumerate(history):
-                history_str += f"Round {i+1} - {author.name}: {proposal}\n"
+            for i, (author_name, proposal, message) in enumerate(history):
+                if proposal is not None:
+                    history_str += f"Round {i+1} - {author_name}: {proposal} ({message})\n"
+                else:
+                    history_str += f"Round {i+1} - {author_name}: {message}\n"
         else:
             history_str = "No previous proposals.\n"
 

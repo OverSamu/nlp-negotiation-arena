@@ -42,17 +42,28 @@ with col2:
 
 st.divider()
 
-rounds = len(st.session_state.game.proposals) if "game" in st.session_state and st.session_state.game.proposals is not None else 0
+rounds = len(st.session_state.game.history) if "game" in st.session_state and st.session_state.game.history is not None else 0
 st.caption(f"🕒 Rounds: {rounds}")
 
 st.subheader("💬 Conversation")
 
+prompt = st.chat_input("⚖️ As a judge, you can provide feedback or suggestions to the agents.")
+if prompt:
+    st.session_state.chat.append({
+        "agent": "Judge",
+        "message": prompt,
+        "shares": {}
+    })
+    st.session_state.game.add_judge_feedback(prompt)
+
+
 for msg in st.session_state.chat:
     shares = {agent: f"{share}%" for agent, share in msg['shares'].items()}
-    with st.chat_message(msg["agent"]):
+    with st.chat_message(msg["agent"], avatar="⚖️" if msg["agent"] == "Judge" else None):
         st.markdown(f"**{msg['agent']}**")
         st.markdown(msg["message"])
-        st.caption(f"📊 Proposes: {shares}")
+        if shares:
+            st.caption(f"📊 Proposes: {shares}")
 
 if st.session_state.finished:
     st.success("✅ Agreement reached!")
