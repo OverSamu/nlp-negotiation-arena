@@ -4,6 +4,8 @@ from agents.fair_agent import FairAgent
 from agents.profit_agent import ProfitAgent
 from environment.negotiation_game import NegotiationGame
 from model.llama_cpp_model import LlamaCppModel
+from openai import OpenAI
+from model.openai_model import OpenAIModel
 from ui.negotiation_runner import run_negotiation_step
 
 st.set_page_config(page_title="Negotiation Arena", layout="centered")
@@ -13,10 +15,8 @@ if "chat" not in st.session_state:
     st.session_state.chat = []
 
 if "game" not in st.session_state:
-    model = LlamaCppModel(
-        model_path="D:/negotiation-arena/models/qwen2.5-3b-instruct-q5_k_m.gguf",
-        temperature=0.5
-    )
+    client = OpenAI()
+    model = OpenAIModel(client, temperature=0.3)
 
     st.session_state.agent_a = ProfitAgent("Alice", model)
     st.session_state.agent_b = FairAgent("Bob", model)
