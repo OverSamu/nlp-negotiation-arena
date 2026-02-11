@@ -29,8 +29,8 @@ class NegotiationGame:
         current_proposal = Proposal(response["shares"], response.get("message", ""))
 
         last_proposal = self.last_proposal()
+        self.proposals.append((current_agent, current_proposal))
         if last_proposal and current_proposal == last_proposal:
             return True, current_agent, current_proposal  # Agreement reached
-        self.proposals.append((current_agent, current_proposal))
         self.agent_turn = (self.agent_turn + 1) % len(self.agents)  # Switch turn
         return False, current_agent, current_proposal  # No agreement yet
