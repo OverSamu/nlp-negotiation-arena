@@ -17,7 +17,7 @@ class BaseAgent(ABC):
         history_str = ""
         if history:
             for i, (author, proposal) in enumerate(history):
-                history_str += f"Round {i+1} - {author}: {proposal}\n"
+                history_str += f"Round {i+1} - {author.name}: {proposal}\n"
         else:
             history_str = "No previous proposals.\n"
 
