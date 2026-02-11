@@ -14,7 +14,8 @@ class NegotiationGame:
     def get_state(self):
         """Provides the current state of the negotiation."""
         last_proposal = self.last_proposal()
-        return f"Total resource to be divided: {self.total}. Last proposal: {last_proposal}"
+        shares = last_proposal.shares if last_proposal else None
+        return f"Total resource to be divided: {self.total}. Last proposal: {shares}"
 
     def get_proposal_history(self):
         """Returns a history of all proposals made."""
