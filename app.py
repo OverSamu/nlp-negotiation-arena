@@ -41,6 +41,10 @@ with col2:
         st.rerun()
 
 st.divider()
+
+rounds = len(st.session_state.game.proposals) if "game" in st.session_state and st.session_state.game.proposals is not None else 0
+st.caption(f"🕒 Rounds: {rounds}")
+
 st.subheader("💬 Conversation")
 
 for msg in st.session_state.chat:
