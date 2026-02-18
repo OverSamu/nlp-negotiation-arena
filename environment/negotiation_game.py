@@ -1,10 +1,14 @@
+from agents.base_agent import BaseAgent
 from environment.proposal import Proposal
 
 
 class NegotiationGame:
-    def __init__(self, agents, total_resource=100):
+    history: list[tuple[int, str, Proposal | None, str]]  # List of (round, agent name, proposal, message)
+    agents: list[BaseAgent]
+
+    def __init__(self, agents: list[BaseAgent], total_resource=100):
         self.total = total_resource
-        self.history = [] # List of (round, agent name, proposal, message)
+        self.history = []
         self.agents = agents
         self.agent_turn = 0  # Index to track whose turn it is
         self.round = 0 # Track the number of rounds (a round is completed when all agents have had a turn)
@@ -26,7 +30,7 @@ class NegotiationGame:
         """Returns a history of all proposals and feedback."""
         return self.history
 
-    def add_judge_feedback(self, feedback):
+    def add_judge_feedback(self, feedback: str):
         """Allows the judge to provide feedback that can be seen by agents."""
         self.history.append((self.round, "Judge", None, feedback)) # None for agent and proposal
 

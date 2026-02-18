@@ -1,9 +1,15 @@
 import json
 from abc import ABC, abstractmethod
 
+from environment.proposal import Proposal
+from model.base_model import BaseLLM
+
 
 class BaseAgent(ABC):
-    def __init__(self, name, model):
+    name: str
+    model: BaseLLM
+
+    def __init__(self, name: str, model: BaseLLM):
         self.name = name
         self.model = model  # An instance of a language model
 
@@ -12,7 +18,8 @@ class BaseAgent(ABC):
         """Defines the behavior of the agent"""
         pass
 
-    def build_prompt(self, negotiation_state, agent_names, history=None):
+    def build_prompt(self, negotiation_state: str, agent_names: list[str],
+                     history: list[tuple[int, str, Proposal | None, str]] | None = None):
         """Build the prompt for the LLM"""
         history_str = ""
         if history:
@@ -52,7 +59,8 @@ If you want to make a counteroffer, provide new shares that sum up to 100% and a
 """
         return prompt
 
-    def act(self, negotiation_state, agent_names, history=None):
+    def act(self, negotiation_state: str, agent_names: list[str],
+            history: list[tuple[int, str, Proposal | None, str]] | None = None):
         """Generate the next move"""
         prompt = self.build_prompt(negotiation_state, agent_names, history)
         response = self.model.generate(prompt)
