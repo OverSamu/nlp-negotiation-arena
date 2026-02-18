@@ -10,15 +10,24 @@ from model.openai_model import OpenAIModel
 client = OpenAI()
 
 
-def run():
-    model = OpenAIModel(client, temperature=0.8)
+def _agents_from_config(config, model):
+    agents = []
+    for agent_cfg in config.get("agents", []):
+        if agent_cfg["type"] == "profit":
+            agents.append(ProfitAgent(agent_cfg["name"], model))
+        elif agent_cfg["type"] == "fair":
+            agents.append(FairAgent(agent_cfg["name"], model))
+    return agents
 
-    agent_a = ProfitAgent("Agent A", model)
-    agent_b = FairAgent("Agent B", model)
 
-    game = NegotiationGame([agent_a, agent_b])
+def run(config):
+    model = OpenAIModel(client,
+                        temperature=config.get("temperature", 0.7),
+                        model_name=config.get("model_name", "gpt-4o-mini"))
 
-    max_rounds = 10
+    game = NegotiationGame(agents=_agents_from_config(config, model))
+
+    max_rounds = config.get("max_rounds", 10)
 
     while game.round < max_rounds:
         agreement, agent_name, proposal, message = game.step()
@@ -28,19 +37,25 @@ def run():
         if agreement:
             return {
                 "agreement": True,
-                "rounds": game.round + 1,
-                "final_share": game.last_proposal()
+                "history": game.get_history()
             }
 
     return {
         "agreement": False,
-        "rounds": max_rounds,
-        "final_share": None
+        "history": game.get_history()
     }
 
 
 if __name__ == "__main__":
-    result = run()
+    result = run({
+        "agents": [
+            {"type": "profit", "name": "Agent A"},
+            {"type": "fair", "name": "Agent B"}
+        ],
+        "model_name": "gpt-4o-mini",
+        "temperature": 0.8,
+        "max_rounds": 10,
+    })
     print("Negotiation Result:")
     print(f"Agreement Reached: {result['agreement']}")
     print(f"Rounds Taken: {result['rounds']}")
