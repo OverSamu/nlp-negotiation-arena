@@ -57,8 +57,8 @@ class NegotiationGame:
         last_proposal = self.last_proposal()
         self.history.append((self.round, current_agent.name, current_proposal, current_message))
         if last_proposal and current_proposal == last_proposal:
-            return True, current_agent, current_proposal, current_message  # Agreement reached
+            return True, current_agent.name, current_proposal, current_message  # Agreement reached
         self.agent_turn = (self.agent_turn + 1) % len(self.agents)  # Switch turn
         if self.agent_turn == 0:
             self.round += 1
-        return False, current_agent, current_proposal, current_message  # No agreement yet
+        return False, current_agent.name, current_proposal, current_message  # No agreement yet
