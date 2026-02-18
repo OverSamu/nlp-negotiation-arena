@@ -1,3 +1,4 @@
+import pandas as pd
 import streamlit as st
 
 from agents.fair_agent import FairAgent
@@ -67,3 +68,8 @@ for msg in st.session_state.chat:
 
 if st.session_state.finished:
     st.success("✅ Agreement reached!")
+
+df = pd.DataFrame(st.session_state.game.get_agent_proposals_in_rounds(),
+                  columns=[a.name for a in st.session_state.game.agents])
+
+st.line_chart(df, x_label="Round", y_label="Proposed Share (%)")

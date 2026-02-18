@@ -13,6 +13,17 @@ class NegotiationGame:
         self.agent_turn = 0  # Index to track whose turn it is
         self.round = 0 # Track the number of rounds (a round is completed when all agents have had a turn)
 
+    def get_agent_proposals_in_rounds(self) -> list[list[int | None]]:
+        """Returns an array (length = number of rounds) of arrays (length = number of agents) of proposals made by each agent in each round."""
+        result = []
+        for n_round in range(self.round + 1):
+            round_proposals = []
+            for agent in self.agents:
+                proposal = next((proposal for r, author_name, proposal, message in self.history if r == n_round and author_name == agent.name), None)
+                round_proposals.append(proposal.shares[agent.name] if proposal else None)
+            result.append(round_proposals)
+        return result
+
     def last_proposal(self):
         """Returns the last valid proposal made by any agent."""
         for n_round, author_name, proposal, message in reversed(self.history):
