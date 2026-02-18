@@ -42,8 +42,8 @@ with col2:
 
 st.divider()
 
-rounds = len(st.session_state.game.history) if "game" in st.session_state and st.session_state.game.history is not None else 0
-st.caption(f"🕒 Rounds: {rounds}")
+current_round = st.session_state.game.round if "game" in st.session_state else 0
+st.caption(f"🕒 Round: {current_round + 1}")
 
 st.subheader("💬 Conversation")
 
