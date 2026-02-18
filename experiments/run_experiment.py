@@ -37,12 +37,12 @@ def run(config):
         if agreement:
             return {
                 "agreement": True,
-                "history": game.get_history()
+                "history": game.get_history().toJSON()
             }
 
     return {
         "agreement": False,
-        "history": game.get_history()
+        "history": game.get_history().toJSON()
     }
 
 

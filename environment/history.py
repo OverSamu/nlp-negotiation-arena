@@ -18,3 +18,14 @@ class History:
 
     def __reversed__(self):
         return reversed(self.history)
+
+    def toJSON(self):
+        return [
+            {
+                "round": r,
+                "agent_name": agent_name,
+                "proposal": proposal.toJSON() if proposal else None,
+                "message": message
+            }
+            for r, agent_name, proposal, message in self.history
+        ]

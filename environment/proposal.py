@@ -9,3 +9,6 @@ class Proposal:
         if not isinstance(other, Proposal):
             return False
         return self.shares == other.shares
+
+    def toJSON(self):
+        return {"shares": self.shares}
