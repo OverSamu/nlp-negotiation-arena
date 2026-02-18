@@ -1,15 +1,17 @@
+from openai import OpenAI
+
 from agents.fair_agent import FairAgent
 from agents.profit_agent import ProfitAgent
 from environment.negotiation_game import NegotiationGame
 from model.dummy_model import DummyModel
 from model.llama_cpp_model import LlamaCppModel
+from model.openai_model import OpenAIModel
+
+client = OpenAI()
 
 
 def run():
-    model = LlamaCppModel(
-        model_path="D:/negotiation-arena/models/qwen2.5-3b-instruct-q5_k_m.gguf",
-        temperature=0.5
-    )
+    model = OpenAIModel(client, temperature=0.8)
 
     agent_a = ProfitAgent("Agent A", model)
     agent_b = FairAgent("Agent B", model)
