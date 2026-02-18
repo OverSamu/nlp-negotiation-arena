@@ -16,22 +16,23 @@ def run():
 
     game = NegotiationGame([agent_a, agent_b])
 
-    max_rounds = 5
-    rounds = 0
+    max_rounds = 10
 
-    while rounds < max_rounds:
-        agreement = game.step()
-        rounds += 1
+    while game.round < max_rounds:
+        agreement, agent_name, proposal, message = game.step()
+
+        print(f"Round {game.round + 1}: {agent_name} proposed {proposal.shares} with message: '{message}'")
+
         if agreement:
             return {
                 "agreement": True,
-                "rounds": rounds,
+                "rounds": game.round + 1,
                 "final_share": game.last_proposal()
             }
 
     return {
         "agreement": False,
-        "rounds": rounds,
+        "rounds": max_rounds,
         "final_share": None
     }
 
