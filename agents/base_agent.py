@@ -37,6 +37,9 @@ class BaseAgent(ABC):
             round_str += f"\nRemaining rounds: {max_rounds - (current_round + 1)}"
             if current_round + 1 >= max_rounds:
                 round_str += " (Final round!)"
+                if agent_names.index(self.name) == len(agent_names) - 1:
+                    round_str += ("\nYOU ARE THE LAST TO ACT IN THIS LAST ROUND, "
+                                  "IF NO AGREEMENT IS REACHED AFTER THIS, ALL AGENTS WILL RECEIVE 0!")
 
         prompt = f"""
 Your name: {self.name}
