@@ -31,8 +31,8 @@ class NegotiationGame:
         """Returns the last valid proposal made by any agent."""
         for n_round, author_name, proposal, message in reversed(self.history):
             if proposal is not None:
-                return proposal
-        return None
+                return n_round, proposal
+        return None, None
 
     def get_history(self):
         """Returns a history of all proposals and feedback."""
@@ -42,17 +42,22 @@ class NegotiationGame:
         """Allows the judge to provide feedback that can be seen by agents."""
         self.history.add(self.round, "Judge", None, feedback)  # None for agent and proposal
 
+    def is_agreement(self):
+        """Checks if the last proposal has been accepted by all agents."""
+        n_round, last_proposal = self.last_proposal()
+        if last_proposal is None:
+            return False
+        # Check if all agents have accepted the last proposal in the current round
+        round_proposals = [proposal for r, author_name, proposal, message in self.history
+                           if r == n_round and proposal is not None]
+        return (len(round_proposals) == len(self.agents) and
+                all(proposal == last_proposal for proposal in round_proposals))
+
     def is_finished(self):
         """Checks if the negotiation has reached an agreement or max rounds."""
         if self.max_rounds is not None and self.round >= self.max_rounds:
             return True
-        last_proposal = self.last_proposal()
-        if last_proposal is None:
-            return False
-        # if the last round has proposals from all agents and they are the same,
-        # we have an agreement
-        last_round_proposals = [proposal for r, author_name, proposal, message in self.history if r == self.round and proposal is not None]
-        return len(last_round_proposals) == len(self.agents) and all(proposal == last_proposal for proposal in last_round_proposals)
+        return self.is_agreement()
 
     def step(self):
         history = self.get_history()
@@ -63,11 +68,8 @@ class NegotiationGame:
         current_proposal = Proposal(response["shares"])
         current_message = response.get("message", "")
 
-        last_proposal = self.last_proposal()
         self.history.add(self.round, current_agent.name, current_proposal, current_message)
-        if last_proposal and current_proposal == last_proposal:
-            return True, current_agent.name, current_round, current_proposal, current_message  # Agreement reached
         self.agent_turn = (self.agent_turn + 1) % len(self.agents)  # Switch turn
         if self.agent_turn == 0:
             self.round += 1
-        return False, current_agent.name, current_round, current_proposal, current_message  # No agreement yet
+        return current_agent.name, current_round, current_proposal, current_message  # No agreement yet

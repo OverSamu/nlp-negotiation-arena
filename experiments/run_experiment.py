@@ -29,18 +29,12 @@ def run(config):
                            max_rounds=config.get("max_rounds", 10))
 
     while not game.is_finished():
-        agreement, agent_name, n_round, proposal, message = game.step()
+        agent_name, n_round, proposal, message = game.step()
 
         print(f"Round {n_round + 1}: {agent_name} proposed {proposal.shares} with message: '{message}'")
 
-        if agreement:
-            return {
-                "agreement": True,
-                "history": game.get_history().toJSON()
-            }
-
     return {
-        "agreement": False,
+        "agreement": game.is_agreement(),
         "history": game.get_history().toJSON()
     }
 
