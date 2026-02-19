@@ -7,7 +7,7 @@ def _get_run_name(current_config):
                                for agent_cfg in current_config.get("agents", [])])
     model_name = current_config.get("model_name", "model")
     temperature = current_config.get("temperature", 0.7)
-    return f"{agent_types}_{temperature}_{model_name}"
+    return f"{agent_types}_{temperature}_{model_name}_rounds"
 
 
 if __name__ == "__main__":

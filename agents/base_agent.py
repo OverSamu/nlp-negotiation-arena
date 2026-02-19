@@ -32,11 +32,19 @@ class BaseAgent(ABC):
         else:
             history_str = "No previous proposals.\n"
 
+        round_str = f"{current_round + 1}"
+        if max_rounds is not None:
+            round_str += f"\nRemaining rounds: {max_rounds - (current_round + 1)}"
+            if current_round + 1 >= max_rounds:
+                round_str += " (Final round!)"
+
         prompt = f"""
 Your name: {self.name}
 All parties: {', '.join(agent_names)}
 
 Total resource to be divided: {total_resource}
+
+Current round: {round_str}
 
 Conversation history:
 {history_str}
