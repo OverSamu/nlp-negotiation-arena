@@ -18,17 +18,17 @@ class BaseAgent(ABC):
         """Defines the behavior of the agent"""
         pass
 
-    def build_prompt(self, negotiation_state: str, agent_names: list[str],
-                     current_round: int, remaining_rounds: int = None,
+    def build_prompt(self, total_resource: int, agent_names: list[str],
+                     current_round: int, max_rounds: int = None,
                      history: History | None = None):
         """Build the prompt for the LLM"""
         history_str = ""
         if history:
             for (n_round, author_name, proposal, message) in history:
                 if proposal is not None:
-                    history_str += f"Round {n_round} - {author_name}: {proposal} ({message})\n"
+                    history_str += f"Round {n_round + 1} - {author_name}: {proposal} ({message})\n"
                 else:
-                    history_str += f"Round {n_round} - {author_name}: {message}\n"
+                    history_str += f"Round {n_round + 1} - {author_name}: {message}\n"
         else:
             history_str = "No previous proposals.\n"
 
@@ -38,8 +38,7 @@ class BaseAgent(ABC):
 Your name: {self.name}
 All parties: {', '.join(agent_names)}
 
-Negotiation state:
-{negotiation_state}
+Total resource to be divided: {total_resource}
 
 Conversation history:
 {history_str}
@@ -60,11 +59,11 @@ If you want to make a counteroffer, provide new shares that sum up to 100% and a
 """
         return prompt
 
-    def act(self, negotiation_state: str, agent_names: list[str],
+    def act(self, total_resource: int, agent_names: list[str],
             current_round: int, remaining_rounds: int = None,
             history: History | None = None):
         """Generate the next move"""
-        prompt = self.build_prompt(negotiation_state, agent_names, current_round, remaining_rounds, history)
+        prompt = self.build_prompt(total_resource, agent_names, current_round, remaining_rounds, history)
         response = self.model.generate(prompt)
 
         try:

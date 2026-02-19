@@ -34,12 +34,6 @@ class NegotiationGame:
                 return proposal
         return None
 
-    def get_state(self):
-        """Provides the current state of the negotiation."""
-        last_proposal = self.last_proposal()
-        shares = last_proposal.shares if last_proposal else None
-        return f"Total resource to be divided: {self.total}. Last proposal: {shares}"
-
     def get_history(self):
         """Returns a history of all proposals and feedback."""
         return self.history
@@ -61,15 +55,13 @@ class NegotiationGame:
         return len(last_round_proposals) == len(self.agents) and all(proposal == last_proposal for proposal in last_round_proposals)
 
     def step(self):
-        state = self.get_state()
         history = self.get_history()
         current_agent = self.agents[self.agent_turn]
+        current_round = self.round
         agent_names = [agent.name for agent in self.agents]
-        remaining_rounds = self.max_rounds - self.round if self.max_rounds is not None else None
-        response = current_agent.act(state, agent_names, self.round, remaining_rounds, history)
+        response = current_agent.act(self.total, agent_names, current_round, self.max_rounds, history)
         current_proposal = Proposal(response["shares"])
         current_message = response.get("message", "")
-        current_round = self.round
 
         last_proposal = self.last_proposal()
         self.history.add(self.round, current_agent.name, current_proposal, current_message)
