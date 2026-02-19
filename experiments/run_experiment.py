@@ -25,14 +25,13 @@ def run(config):
                         temperature=config.get("temperature", 0.7),
                         model_name=config.get("model_name", "gpt-4o-mini"))
 
-    game = NegotiationGame(agents=_agents_from_config(config, model))
+    game = NegotiationGame(agents=_agents_from_config(config, model),
+                           max_rounds=config.get("max_rounds", 10))
 
-    max_rounds = config.get("max_rounds", 10)
+    while not game.is_finished():
+        agreement, agent_name, n_round, proposal, message = game.step()
 
-    while game.round < max_rounds:
-        agreement, agent_name, proposal, message = game.step()
-
-        print(f"Round {game.round + 1}: {agent_name} proposed {proposal.shares} with message: '{message}'")
+        print(f"Round {n_round + 1}: {agent_name} proposed {proposal.shares} with message: '{message}'")
 
         if agreement:
             return {

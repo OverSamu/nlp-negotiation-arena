@@ -1,5 +1,5 @@
 def run_negotiation_step(game):
-    agreement, agent_name, proposal, message = game.step()
+    agreement, agent_name, n_round, proposal, message = game.step()
 
     return {
         "agent": agent_name,

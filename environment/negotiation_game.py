@@ -7,12 +7,13 @@ class NegotiationGame:
     history: History
     agents: list[BaseAgent]
 
-    def __init__(self, agents: list[BaseAgent], total_resource=100):
+    def __init__(self, agents: list[BaseAgent], total_resource=100, max_rounds: int = None):
         self.total = total_resource
         self.history = History()
         self.agents = agents
         self.agent_turn = 0  # Index to track whose turn it is
         self.round = 0  # Track the number of rounds (a round is completed when all agents have had a turn)
+        self.max_rounds = max_rounds
 
     def get_agent_proposals_in_rounds(self) -> list[list[int | None]]:
         """Returns an array (length = number of rounds) of arrays (length = number of agents) of proposals made by each agent in each round."""
@@ -47,20 +48,34 @@ class NegotiationGame:
         """Allows the judge to provide feedback that can be seen by agents."""
         self.history.add(self.round, "Judge", None, feedback)  # None for agent and proposal
 
+    def is_finished(self):
+        """Checks if the negotiation has reached an agreement or max rounds."""
+        if self.max_rounds is not None and self.round >= self.max_rounds:
+            return True
+        last_proposal = self.last_proposal()
+        if last_proposal is None:
+            return False
+        # if the last round has proposals from all agents and they are the same,
+        # we have an agreement
+        last_round_proposals = [proposal for r, author_name, proposal, message in self.history if r == self.round and proposal is not None]
+        return len(last_round_proposals) == len(self.agents) and all(proposal == last_proposal for proposal in last_round_proposals)
+
     def step(self):
         state = self.get_state()
         history = self.get_history()
         current_agent = self.agents[self.agent_turn]
         agent_names = [agent.name for agent in self.agents]
-        response = current_agent.act(state, agent_names, history)
+        remaining_rounds = self.max_rounds - self.round if self.max_rounds is not None else None
+        response = current_agent.act(state, agent_names, self.round, remaining_rounds, history)
         current_proposal = Proposal(response["shares"])
         current_message = response.get("message", "")
+        current_round = self.round
 
         last_proposal = self.last_proposal()
         self.history.add(self.round, current_agent.name, current_proposal, current_message)
         if last_proposal and current_proposal == last_proposal:
-            return True, current_agent.name, current_proposal, current_message  # Agreement reached
+            return True, current_agent.name, current_round, current_proposal, current_message  # Agreement reached
         self.agent_turn = (self.agent_turn + 1) % len(self.agents)  # Switch turn
         if self.agent_turn == 0:
             self.round += 1
-        return False, current_agent.name, current_proposal, current_message  # No agreement yet
+        return False, current_agent.name, current_round, current_proposal, current_message  # No agreement yet
