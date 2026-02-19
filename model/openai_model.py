@@ -12,7 +12,12 @@ class OpenAIModel(BaseLLM):
             model=self.model_name,
             instructions=system_prompt,
             input=user_prompt,
-            temperature=self.temperature
+            temperature=self.temperature,
+            text={
+                "format": {
+                    "type": "json_object"
+                }
+            }
         )
 
         return response.output_text.strip()

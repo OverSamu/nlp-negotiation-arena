@@ -56,8 +56,8 @@ Please reply ONLY in JSON format, following this pattern:
 
 {{
   "shares": {{
-    "<agent_name>": <percentage>,
-    "<agent_name>": <percentage>
+    "<agent_name>": <percentage, integer from 0 to 100>,
+    "<agent_name>": <percentage, integer from 0 to 100>
   }},
   "message": "<short explanation>" 
 }}
