@@ -8,13 +8,11 @@ class OpenAIModel(BaseLLM):
         self.temperature = temperature
 
     def generate(self, system_prompt: str, user_prompt: str) -> str:
-        response = self.client.chat.completions.create(
+        response = self.client.responses.create(
             model=self.model_name,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt}
-            ],
+            instructions=system_prompt,
+            input=user_prompt,
             temperature=self.temperature
         )
 
-        return response.choices[0].message.content.strip()
+        return response.output_text.strip()
