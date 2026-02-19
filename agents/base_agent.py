@@ -62,6 +62,9 @@ DO NOT use text outside of the JSON.
 If you want to accept the current proposal, repeat the shares from the last proposal.
 Always ensure that the shares sum up to 100%.
 If you want to make a counteroffer, provide new shares that sum up to 100% and a brief explanation of your reasoning.
+
+WARNING:
+If no agreement is reached within the remaining rounds, both agents will receive 0!
 """
         return prompt
 
