@@ -18,7 +18,7 @@ class BaseAgent(ABC):
         """Defines the behavior of the agent"""
         pass
 
-    def build_prompt(self, total_resource: int, agent_names: list[str],
+    def build_user_prompt(self, total_resource: int, agent_names: list[str],
                      current_round: int, max_rounds: int = None,
                      history: History | None = None):
         """Build the prompt for the LLM"""
@@ -33,8 +33,6 @@ class BaseAgent(ABC):
             history_str = "No previous proposals.\n"
 
         prompt = f"""
-{self.system_prompt()}
-
 Your name: {self.name}
 All parties: {', '.join(agent_names)}
 
@@ -63,8 +61,8 @@ If you want to make a counteroffer, provide new shares that sum up to 100% and a
             current_round: int, remaining_rounds: int = None,
             history: History | None = None):
         """Generate the next move"""
-        prompt = self.build_prompt(total_resource, agent_names, current_round, remaining_rounds, history)
-        response = self.model.generate(prompt)
+        user_prompt = self.build_user_prompt(total_resource, agent_names, current_round, remaining_rounds, history)
+        response = self.model.generate(self.system_prompt(), user_prompt)
 
         try:
             parsed = json.loads(response)

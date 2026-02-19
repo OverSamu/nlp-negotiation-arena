@@ -4,7 +4,7 @@ import json
 
 class DummyModel(BaseLLM):
 
-    def generate(self, prompt: str) -> str:
+    def generate(self, system_prompt: str, user_prompt: str) -> str:
         responses = [
             {"my_share": 50, "your_share": 50, "message": "Fair division"},
             {"my_share": 80, "your_share": 20, "message": "I want the majority"},

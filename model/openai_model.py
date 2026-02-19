@@ -7,12 +7,12 @@ class OpenAIModel(BaseLLM):
         self.model_name = model_name
         self.temperature = temperature
 
-    def generate(self, prompt: str) -> str:
+    def generate(self, system_prompt: str, user_prompt: str) -> str:
         response = self.client.chat.completions.create(
             model=self.model_name,
             messages=[
-                {"role": "system", "content": "You are a negotiation agent."},
-                {"role": "user", "content": prompt}
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
             ],
             temperature=self.temperature
         )

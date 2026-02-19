@@ -9,7 +9,8 @@ class LlamaCppModel(BaseLLM):
             n_ctx=2048
         )
 
-    def generate(self, prompt: str) -> str:
+    def generate(self, system_prompt: str, user_prompt: str) -> str:
+        prompt = f"{system_prompt}\n\n{user_prompt}"
         output = self.llm(
             prompt,
             max_tokens=256
