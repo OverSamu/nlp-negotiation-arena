@@ -13,8 +13,8 @@ def _get_run_name(current_config):
 if __name__ == "__main__":
     config = {
         "agents": [
-            {"type": "fair", "name": "Alice"},
-            {"type": "tit_for_tat", "name": "Bob"}
+            {"type": "hardliner", "name": "Alice"},
+            {"type": "hardliner", "name": "Bob"}
         ],
         "model_name": "gpt-5.2",
         "temperature": 0.0,

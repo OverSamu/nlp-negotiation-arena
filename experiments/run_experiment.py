@@ -1,6 +1,7 @@
 from openai import OpenAI
 
 from agents.fair_agent import FairAgent
+from agents.hardliner_agent import HardlinerAgent
 from agents.profit_agent import ProfitAgent
 from agents.tit_for_tat_agent import TitForTatAgent
 from environment.negotiation_game import NegotiationGame
@@ -20,6 +21,8 @@ def _agents_from_config(config, model):
             agents.append(FairAgent(agent_cfg["name"], model))
         elif agent_cfg["type"] == "tit_for_tat":
             agents.append(TitForTatAgent(agent_cfg["name"], model))
+        elif agent_cfg["type"] == "hardliner":
+            agents.append(HardlinerAgent(agent_cfg["name"], model))
     return agents
 
 
