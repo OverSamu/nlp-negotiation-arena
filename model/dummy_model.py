@@ -6,10 +6,21 @@ class DummyModel(BaseLLM):
 
     def generate(self, system_prompt: str, user_prompt: str) -> str:
         responses = [
-            {"my_share": 50, "your_share": 50, "message": "Fair division"},
-            {"my_share": 80, "your_share": 20, "message": "I want the majority"},
-            {"my_share": 30, "your_share": 70, "message": "I am willing to concede"},
-            {"my_share": 60, "your_share": 40, "message": "I offer a compromise"},
-            {"my_share": 90, "your_share": 10, "message": "I want almost everything"},
+            {
+                "shares": {"Alice": 50, "Bob": 50},
+                "message": "I think this is a fair split."
+            },
+            {
+                "shares": {"Alice": 70, "Bob": 30},
+                "message": "I believe I deserve a larger share based on my contributions."
+            },
+            {
+                "shares": {"Alice": 30, "Bob": 70},
+                "message": "I think Bob has contributed more and should receive a larger share."
+            },
+            {
+                "shares": {"Alice": 60, "Bob": 40},
+                "message": "I am willing to compromise and take a slightly smaller share to maintain cooperation."
+            }
         ]
         return json.dumps(random.choice(responses))
