@@ -6,7 +6,8 @@ class LlamaCppModel(BaseLLM):
         self.llm = Llama(
             model_path=model_path,
             temperature=temperature,
-            n_ctx=2048
+            n_ctx=2048,
+            seed=42,
         )
 
     def generate(self, system_prompt: str, user_prompt: str) -> str:
