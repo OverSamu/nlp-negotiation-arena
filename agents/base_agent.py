@@ -32,22 +32,13 @@ class BaseAgent(ABC):
         else:
             history_str = "No previous proposals.\n"
 
-        round_str = f"{current_round + 1}"
-        if max_rounds is not None:
-            round_str += f"\nRemaining rounds: {max_rounds - (current_round + 1)}"
-            if current_round + 1 >= max_rounds:
-                round_str += " (Final round!)"
-                if agent_names.index(self.name) == len(agent_names) - 1:
-                    round_str += ("\nYOU ARE THE LAST TO ACT IN THIS LAST ROUND, "
-                                  "IF NO AGREEMENT IS REACHED AFTER THIS, ALL AGENTS WILL RECEIVE 0!")
-
         prompt = f"""
 Your name: {self.name}
 All parties: {', '.join(agent_names)}
 
 Total resource to be divided: {total_resource}
 
-Current round: {round_str}
+Current round: {current_round + 1}
 
 Conversation history:
 {history_str}
@@ -65,9 +56,6 @@ DO NOT use text outside of the JSON.
 If you want to accept the current proposal, repeat the shares from the last proposal.
 Always ensure that the shares sum up to 100%.
 If you want to make a counteroffer, provide new shares that sum up to 100% and a brief explanation of your reasoning.
-
-WARNING:
-If no agreement is reached within the remaining rounds, both agents will receive 0!
 """
         return prompt
 

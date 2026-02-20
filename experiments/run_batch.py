@@ -7,7 +7,7 @@ def _get_run_name(current_config):
                                for agent_cfg in current_config.get("agents", [])])
     model_name = current_config.get("model_name", "model")
     temperature = current_config.get("temperature", 0.7)
-    return f"{agent_types}_{temperature}_{model_name}_warn_last_agent"
+    return f"{agent_types}_{temperature}_{model_name}"
 
 
 if __name__ == "__main__":
@@ -16,12 +16,12 @@ if __name__ == "__main__":
             {"type": "fair", "name": "Alice"},
             {"type": "tit_for_tat", "name": "Bob"}
         ],
-        "model_name": "gpt-4o-mini",
-        "temperature": 0.7,
-        "max_rounds": 7,
+        "model_name": "gpt-5.2",
+        "temperature": 0.0,
+        "max_rounds": 10,
     }
 
-    N_RUNS = 5
+    N_RUNS = 1
 
     results = run_multiple_experiments(
         run_experiment_fn=run,
