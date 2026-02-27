@@ -14,7 +14,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: login to gitlab registry
-        run: docker login -u '${{secrets.username}}' -p ${{secrets.deploytoken}} ${{variables.registry}}
+        run: docker login -u '${{secrets.username}}' -p ${{secrets.deploytoken}} ${{vars.registry}}
       - name: Build and push to local registry
         uses: docker/build-push-action@v6
         with:
