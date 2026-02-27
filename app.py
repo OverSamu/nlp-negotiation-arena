@@ -28,11 +28,11 @@ col1, col2 = st.columns(2)
 
 with col1:
     if st.button("▶️ Next step") and not st.session_state.finished:
-        event, agreement = run_negotiation_step(st.session_state.game)
+        event = run_negotiation_step(st.session_state.game)
 
         st.session_state.chat.append(event)
 
-        if agreement:
+        if st.session_state.game.is_agreement():
             st.session_state.finished = True
 
 with col2:
