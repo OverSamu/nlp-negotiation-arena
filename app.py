@@ -21,28 +21,25 @@ if "game" not in st.session_state:
     agent_a_type = st.selectbox("Select Agent A (Alice) type", agent_types, index=0)
     agent_b_type = st.selectbox("Select Agent B (Bob) type", agent_types, index=1)
 
+
+    def get_agent(name, agent_type):
+        if agent_type == "ProfitAgent":
+            return ProfitAgent(name, model)
+        if agent_type == "FairAgent":
+            return FairAgent(name, model)
+        if agent_type == "TitForTatAgent":
+            return TitForTatAgent(name, model)
+        if agent_type == "HardlinerAgent":
+            return HardlinerAgent(name, model)
+        return None
+
+
     if st.button("Initialize Game"):
         client = OpenAI()
         model = OpenAIModel(client, temperature=0.0, model_name="gpt-5.2")
 
-        if agent_a_type == "ProfitAgent":
-            st.session_state.agent_a = ProfitAgent("Alice", model)
-        elif agent_a_type == "FairAgent":
-            st.session_state.agent_a = FairAgent("Alice", model)
-        elif agent_a_type == "TitForTatAgent":
-            st.session_state.agent_a = TitForTatAgent("Alice", model)
-        elif agent_a_type == "HardlinerAgent":
-            st.session_state.agent_a = HardlinerAgent("Alice", model)
-
-        if agent_b_type == "ProfitAgent":
-            st.session_state.agent_b = ProfitAgent("Bob", model)
-        elif agent_b_type == "FairAgent":
-            st.session_state.agent_b = FairAgent("Bob", model)
-        elif agent_b_type == "TitForTatAgent":
-            st.session_state.agent_b = TitForTatAgent("Bob", model)
-        elif agent_b_type == "HardlinerAgent":
-            st.session_state.agent_b = HardlinerAgent("Bob", model)
-
+        st.session_state.agent_a = get_agent("Alice", agent_a_type)
+        st.session_state.agent_b = get_agent("Bob", agent_b_type)
         st.session_state.game = NegotiationGame([st.session_state.agent_a, st.session_state.agent_b])
         st.session_state.finished = False
 
@@ -51,6 +48,8 @@ if "game" not in st.session_state:
             "message": f"Game initialized with Alice as {agent_a_type} and Bob as {agent_b_type}.",
             "shares": {}
         })
+
+        st.rerun()
 else:
     col1, col2 = st.columns(2)
 
@@ -83,7 +82,6 @@ else:
             "shares": {}
         })
         st.session_state.game.add_judge_feedback(prompt)
-
 
     for msg in st.session_state.chat:
         shares = {agent: f"{share}%" for agent, share in msg['shares'].items()}
