@@ -16,7 +16,7 @@ if "chat" not in st.session_state:
 
 if "game" not in st.session_state:
     client = OpenAI()
-    model = OpenAIModel(client, temperature=0.3)
+    model = OpenAIModel(client, temperature=0.0, model_name="gpt-5.2")
 
     st.session_state.agent_a = ProfitAgent("Alice", model)
     st.session_state.agent_b = FairAgent("Bob", model)
