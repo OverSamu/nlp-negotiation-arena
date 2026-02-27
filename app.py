@@ -1,11 +1,10 @@
 import pandas as pd
 import streamlit as st
+from openai import OpenAI
 
 from agents.fair_agent import FairAgent
 from agents.profit_agent import ProfitAgent
 from environment.negotiation_game import NegotiationGame
-from model.llama_cpp_model import LlamaCppModel
-from openai import OpenAI
 from model.openai_model import OpenAIModel
 from ui.negotiation_runner import run_negotiation_step
 
