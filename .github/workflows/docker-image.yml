@@ -20,3 +20,4 @@ jobs:
         with:
           provenance: false
           push: true
+          tags: latest
