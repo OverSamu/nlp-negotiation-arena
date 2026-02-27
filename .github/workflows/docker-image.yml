@@ -20,4 +20,4 @@ jobs:
         with:
           provenance: false
           push: true
-          tags: latest
+          tags: ${{vars.registry}}/${{vars.image_name}}:latest
