@@ -21,4 +21,4 @@ jobs:
           provenance: false
           push: true
           tags: ${{vars.registry}}/${{vars.image_name}}:latest
-          platforms: linux/arm64
+          platforms: linux/amd64
